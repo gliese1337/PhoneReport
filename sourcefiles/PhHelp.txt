@@ -1,0 +1,48 @@
+To use the automatic Phone Invoice Record Making Program:
+(Program and Instructions By Elder Kearsley)
+
+0. After starting this program, don't touch EXCEL! AT ALL! Or else you might break it.
+If it complains and doesn't want to start, then make sure that Excel is not running at all (check the process list in the Task Manager), close this program, and try again.
+
+1. Click the "browse" button and select the phone directory sheet for the first part of the month (i.e., the directory that was current for the transfer when the month started).
+2. Use the drop-down box to select the day of the transfer, or none if there wasn't a transfer this month.
+3. If there was a transfer, click the next "browse" button and select the phone directory for the second part of the month.
+4. Click the next "browse" button and select the invoice file for the month.
+5. If you feel like it, type in a name for the output file in the "Save Graphs As" box.
+6. Click "Process Invoice" and go do something else for a while.
+7. If a scary-looking error message pops up, don't freak out! Check to see if the output file has already been generated, and see how much stuff is in it.
+If everything's already there, then just ignore the silly error message. If it's not, *then* you can freak out.
+--Use the "browse" button to select the directory
+file for the part of the month before transfers,
+or, if there was no transfer, for the whole month.
+--Use the "browse" button to select the directory
+file for the part of the month after transfers.
+--Use the "browse" button to select the invoice
+file for the current report.
+--Select the date that transfers happened during
+this reporting month, or "None" if there was no transfer.
+--Check this box to get more control options.
+--Use the "browse" button to select a report configuration
+file made with the "Phone Record Settings" program.
+This is optional- if left blank, default settings will be used.
+
+Report settings include color coding different call types,
+hiding or ignoring certain call types, and setting allowed
+call times and lengths.
+--To create a report for only a single phone, type the final
+digits (at least 4) of the phone number here. If this field
+is not left blank, the report will *only* be generated for
+the first matching number, and the rest of the invoice will
+be ignored.
+--A line number may be entered here to tell the program to
+skip the first part of the invoice up to that line, and
+continue from there. This is useful for saving time if you
+know the position of a particular section for a "Search for
+Number" report, or if you need to start over in the middle
+because you screwed something up the first time around and
+don't want to re-do everything that was already completed.
+--Use these boxes to restrict the time period of the report.
+For example, President might want a report for the activity
+of one phone during 1 week- it's really useful to be able to
+generate a report just for that, rather than deleting extra
+stuff by hand afterwards.

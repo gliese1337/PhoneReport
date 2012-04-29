@@ -1,0 +1,38 @@
+<html>
+<head>
+	<title>Import Invoices</title>
+	<link rel="shortcut icon" href="phoneico.ico" />
+<script>
+var wheight = 72;
+
+function addFile(){
+	var finput = document.createElement("INPUT");
+	finput.type="file";
+	zform.appendChild(finput);
+	zform.appendChild(document.createElement("BR"));
+	wheight+=24;
+	window.dialogHeight = wheight+"px";
+}
+
+function returnData(){
+	var i,retArgs = [];
+	for(i=0;i<zform.elements.length;i++) if(zform.elements[i].value) retArgs.push(zform.elements[i].value);
+	window.returnValue = retArgs;
+	window.close();
+}
+
+function init(){
+	window.dialogHeight = wheight+"px";
+	window.dialogWidth = "230px";
+}
+</script>
+</head>
+<body bgcolor="#f1f0e8" onload="init();">
+<button onclick="addFile();" style="width:115px">Add Invoice</button>
+<button onclick="window.close();" style="width:115px">Cancel</button>
+<form id="zform" style="position:relative;top:-19px;">
+<input type="file" style="width:230px;" /><br />
+</form>
+<button onclick="returnData();" style="position:relative;top:-38px;width:230px;">Import</button>
+</body>
+</html>

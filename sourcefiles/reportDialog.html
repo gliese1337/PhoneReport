@@ -1,0 +1,213 @@
+<html>
+<head>
+	<title>Create New Report</title>
+	<link rel="shortcut icon" href="phoneico.ico" />
+<script>
+var wheight = 120;
+var parentwin;
+var startyear=2009;
+var endyear=(new Date()).getFullYear();
+
+function getDateIndex(wform,pivot){
+	var latch;
+	for(latch=0;wform.elements[latch]!=pivot;latch++){}
+	return latch;
+}
+
+function updateDaysOfMonth(latch){
+	var month = mform.elements[latch].selectedIndex;
+	var lDate = new Date(parseInt(yform.elements[latch].value,10),month+1);
+	lDate.setDate(lDate.getDate()-1);
+	var days = lDate.getDate();
+	dform.elements[latch].innerHTML = "";
+	for(var day=1;day<=days;day++){dform.elements[latch].add(new Option(day,day));}
+}
+
+function updateSelectedDate(latch){
+
+}
+
+function addFile(){
+	var finput = document.createElement("INPUT");
+	finput.type="file";
+	finput.style.height="20px";
+	dirform.appendChild(document.createElement("BR"));
+	dirform.appendChild(finput);
+
+	finput = document.createElement("SELECT");
+	var oval;
+	for(oval=startyear;oval<=endyear;oval++) finput.add(new Option(oval,oval));
+	finput.selectedIndex=finput.length-1;
+	finput.onchange=Function("updateSelectedDate(getDateIndex(yform,this));");
+	yform.appendChild(document.createElement("BR"));
+	yform.appendChild(finput);
+
+	finput = document.createElement("SELECT");
+	var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+	for(oval=0;oval<months.length;oval++) finput.add(new Option(months[oval],oval));
+	finput.selectedIndex=0;
+	finput.onchange=Function("updateSelectedDate(getDateIndex(mform,this));");
+	mform.appendChild(document.createElement("BR"));
+	mform.appendChild(finput);
+
+	finput = document.createElement("SELECT");
+	finput.onchange=Function("updateSelectedDate(getDateIndex(dform,this));");
+	dform.appendChild(document.createElement("BR"));
+	dform.appendChild(finput);
+	updateDaysOfMonth(dform.elements.length-1);
+
+	//updateSelectedDate(dform.elements.length-2);
+
+	wheight+=22;
+	window.dialogHeight = wheight+"px";
+}
+
+function showNumbers(sel){
+	if(sel.checked){
+		numlist.style.display="inline";
+		wheight+=40;
+	}else{
+		numlist.style.display="none";
+		wheight-=40;
+	}
+	window.dialogHeight = wheight+"px";	
+}
+
+function returnData(){
+	var dObj = new Date("01/01/1970");
+	var temp,i,k;
+	var reptype = (fullcheck.checked?1:0) | (sumcheck.checked?2:0) | (exlcheck.checked?4:0) | (textcheck.checked?8:0);
+	if(!(reptype&3)){
+		alert("No Report Type Selected.");
+		return;
+	}
+	if(!(reptype&12)){
+		alert("No Output Type Selected.");
+		return;
+	}
+
+	parentwin.repDates.splice(0,parentwin.repDates.length); //we need to splice instead of assigning an empty array
+	parentwin.repDirs.splice(0,parentwin.repDirs.length); //because we need the object to not be tied to this window
+
+	dObj = new Date(syear.value,smonth.value,sday.value);
+	parentwin.repDates.push(dObj.getTime());
+	for(i=0;i<dirform.elements.length;i++) if(dirform.elements[i].value){ //we could make this better, except that ie doesn't have unshift
+		dObj.setFullYear(yform.elements[i].value,mform.elements[i].value,dform.elements[i].value);
+		parentwin.repDates.push(dObj.getTime());
+		parentwin.repDirs.push(dirform.elements[i].value);
+	}
+	if(!parentwin.repDirs.length){
+		alert("At Least 1 Directory Must Be Included.");
+		return;
+	}
+	for(i=parentwin.repDates.length-1;i--;){
+		//alert(i+": "+parentwin.repDates[i]+" : "+parentwin.repDates[i+1]);
+		if(parentwin.repDates[i]>parentwin.repDates[i+1]){
+			alert("Dates out of order.");
+			return;
+		}
+	}
+
+	//do as much as we can after all of the error checking
+	parentwin.repOutType = reptype;
+	if(parentwin.repNums) parentwin.repNums.splice(0,parentwin.repNums.length);
+	parentwin.sumMinTimes = parseInt(ccount.value,10);
+	if(!parentwin.sumMinTimes){parentwin.sumMinTimes=0;}
+	temp = parseInt(clen.value,10);
+	if(!temp){parentwin.sumMinDur=-7200000;}
+	else{
+		dObj.setMinutes(temp);
+		parentwin.sumMinDur = dObj.getTime();
+	}
+	
+	parentwin.repNumsText = "";
+	if(numcheck.checked){
+		var numtext = numlist.value.replace(/\s+/,"");
+		parentwin.repNumsText = numtext.replace(/,+/,",");
+	}
+	parentwin.expfilename = savename.value?savename.value:"";
+	parentwin.runReport();
+}
+
+function showSummaryOpts(){
+	if(sumcheck.checked){
+		sumopts.style.display = "inline";
+		wheight+=23;
+	}else{
+		sumopts.style.display = "none";
+		wheight-=23;
+	}
+	window.dialogHeight = wheight+"px";
+}
+
+function init(){
+	//window.dialogHeight = wheight+"px";
+	//window.dialogWidth = "400px";//"395px";
+
+	parentwin = dialogArguments;
+
+	//add stuff to load previous settings if there are any
+
+	var cyear = parseInt((new Date()).getFullYear());
+	var oval;
+	for(oval=2010;oval<=cyear;oval++){
+		syear.add(new Option(oval,oval));
+		yform.elements[0].add(new Option(oval,oval));
+	}
+	syear.selectedIndex=0;
+	yform.elements[0].selectedIndex=0;
+	var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+	for(oval=0;oval<months.length;oval++){
+		smonth.add(new Option(months[oval],oval));
+		mform.elements[0].add(new Option(months[oval],oval));
+	}
+	smonth.selectedIndex=0;
+	mform.elements[0].selectedIndex=0;
+	for(oval=1;oval<32;oval++){
+		sday.add(new Option(oval,oval));
+		dform.elements[0].add(new Option(oval,oval));
+	}
+	sday.selectedIndex=0;
+	dform.elements[0].selectedIndex=0;
+}
+</script>
+</head>
+<body bgcolor="#f1f0e8" onload="init();">
+<button onclick="addFile();" style="position:absolute;top:0px;left:0px;width:150px;">Add Directory</button> 
+<table>
+<tr>
+	<td style="text-align:right;">Start Date:</td>
+	<td><select id="syear" onchange="/*updateSelectedYear(this);*/"></select></td>
+	<td><select id="smonth" onchange="/*updateSelectedMonth(this);*/"></select></td>
+	<td><select id="sday" onchange="/*updateSelectedDay(this);*/"></select></td>
+</tr>
+<tr>
+	<td>Save As: <input id="savename" /></td>
+	<td colspan=3>Directory Effective Until:</td>
+</tr>
+<tr>
+	<td><form id="dirform"><input type="file" style="height:20px"/></form></td>
+	<td><form id="yform"><select onchange="updateSelectedDate(getDateIndex(yform,this));" style="height:30px"></select></form></td>
+	<td><form id="mform"><select onchange="updateSelectedDate(getDateIndex(mform,this));" style="height:30px"></select></form></td>
+	<td><form id="dform"><select onchange="updateSelectedDate(getDateIndex(dform,this));" style="height:30px"></select></form></td>
+</tr>
+</table>
+<div style="position:relative;top:-24px;left:2px;">
+	Full Report:<input type="checkbox" id="fullcheck" checked="true" />
+	Summary:<input type="checkbox" id="sumcheck" onclick="showSummaryOpts();" />
+	Save Excel:<input type="checkbox" id="exlcheck" checked="true" />
+	Save Text:<input type="checkbox" id="textcheck" />
+</div>
+<div id="sumopts" style="position:relative;top:-25px;left:2px;display:none;">
+	Min. # of Calls:<input size=3 id="ccount" />
+	Min. Cumulative Length (mins):<input size=3 id="clen" />
+</div>
+<button onclick="returnData();" style="position:relative;top:-25px;width:150px;">Run Report</button>
+<div style="position:relative;top:-46px;left:200px;">
+	Specify numbers:<input type="checkbox" id="numcheck" onclick="showNumbers(this);" />
+</div>
+<div style="position:relative;top:-45px;">
+	<textarea id="numlist" style="display:none;" cols=47></textarea>
+</div>
+</body>
+</html>
